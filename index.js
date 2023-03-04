@@ -16,7 +16,7 @@ app.post('/get-keyword', async(req, res) => {
     const searchKeyword = req.body.searchTerm;
 
     console.log("searchKeyword data: ", searchKeyword);
-    const browser = await puppeteer.launch({headless: false});
+    const browser = await puppeteer.launch({headless: true});
     const page = await browser.newPage();
     await page.goto('https://www.copyright.gov');
     await page.setViewport({ width: 1366, height: 768});
