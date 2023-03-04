@@ -16,35 +16,33 @@ app.post('/get-keyword', async(req, res) => {
     const searchKeyword = req.body.searchTerm;
 
     console.log("searchKeyword data: ", searchKeyword);
-    res.status(200).send('From server');
+    const browser = await puppeteer.launch({headless: false});
+    const page = await browser.newPage();
+    await page.goto('https://www.copyright.gov');
+    await page.setViewport({ width: 1366, height: 768});
 
-    // const browser = await puppeteer.launch({headless: false});
-    // const page = await browser.newPage();
-    // await page.goto('https://www.copyright.gov');
-    // await page.setViewport({ width: 1366, height: 768});
+    await page.type('#query', `${searchKeyword}`);
+    await page.click('#search_form > div > span > button');
+    await page.waitForSelector('#results');
 
-    // await page.type('#query', `${searchKeyword}`);
-    // await page.click('#search_form > div > span > button');
-    // await page.waitForSelector('#results');
-
-    // const data = await page.evaluate(() => {
-    //     return {
-    //       title: Array.from(document.querySelectorAll('.result > h4 > a')).map(elem => elem.innerText),
-    //       urldata: Array.from(document.querySelectorAll('.result > span.url')).map(elem => elem.innerText),
-    //       details: Array.from(document.querySelectorAll('.result > span.description')).map(elem => elem.innerText),
-    //     };
-    //   });
-    //   let dataArray = [];
-    //   for(let i = 0; i < data.title; i++) {
-    //     let dataObj = {
-    //       titleVal: data.title[i],
-    //       urlVal: data.urldata[i],
-    //       descriptionVal: data.details[i],
-    //     }
-    //     dataArray.push(dataObj);
-    //   }
-    // await browser.close();
-    // res.json(data);
+    const data = await page.evaluate(() => {
+        return {
+          title: Array.from(document.querySelectorAll('.result > h4 > a')).map(elem => elem.innerText),
+          urldata: Array.from(document.querySelectorAll('.result > span.url')).map(elem => elem.innerText),
+          details: Array.from(document.querySelectorAll('.result > span.description')).map(elem => elem.innerText),
+        };
+      });
+      let dataArray = [];
+      for(let i = 0; i < data.title; i++) {
+        let dataObj = {
+          titleVal: data.title[i],
+          urlVal: data.urldata[i],
+          descriptionVal: data.details[i],
+        }
+        dataArray.push(dataObj);
+      }
+    await browser.close();
+    res.status(200).json(data);
 })
 
 

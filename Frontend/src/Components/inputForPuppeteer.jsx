@@ -13,18 +13,17 @@ const InputForPuppeteer = () => {
         };
         const res = await axios.post( '/get-keyword', dataObj );
         console.log( res.data );
-        alert(res.data);
-        // let dummyArray = [];
-        // for ( let i = 0; i < res.data.details.length; i++ ) {
-        //     let dataObj = {
-        //         titleData: res.data.title[ i ],
-        //         urlData: res.data.urldata[ i ],
-        //         descData: res.data.details[ i ],
-        //     };
-        //     dummyArray.push( dataObj );
-        //     setdataState( [ ...dummyArray ] );
-        // }
-        // console.log( dummyArray );
+        let dummyArray = [];
+        for ( let i = 0; i < res.data.details.length; i++ ) {
+            let dataObj = {
+                titleData: res.data.title[ i ],
+                urlData: res.data.urldata[ i ],
+                descData: res.data.details[ i ],
+            };
+            dummyArray.push( dataObj );
+            setdataState( [ ...dummyArray ] );
+        }
+        console.log( dummyArray );
     };
     return (
         <>
